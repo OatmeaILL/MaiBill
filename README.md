@@ -4,6 +4,8 @@
 
 包名 `com.maibill.app` · minSdk 26 (Android 8.0) · targetSdk 35
 
+**📦 下载：[Releases v2.4](https://github.com/OatmeaILL/MaiBill/releases/tag/v2.4)**（含 `mai-bill-v2.4.apk`，允许「安装未知来源」后直接装）
+
 > ⚠️ 素材版权声明：本项目代码以 GPLv3 开源，但仓库内的若叶睦角色立绘 / Q 版图（`app/src/main/res/drawable-nodpi/mutsumi_*.png`、`mipmap-*/ic_launcher_*`）源自 BanG Dream! 官方素材，**版权归 Bushiroad / 绘森等权利方所有，仅供个人学习交流，切勿用于商业用途**。这部分内容不适用 GPLv3 授权。移除/替换这些素材不影响程序功能——`res/drawable/mutsumi_chibi.xml` 是自绘矢量兜底版。
 
 ## 功能
