@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ 系统启动屏定制：背景与主题同色、图标透明 → 视觉上"点开即进主界面" -->
+    <style name="Theme.MaiBill" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/app_bg</item>
+        <item name="android:windowSplashScreenBackground">@color/app_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_blank</item>
+    </style>
+</resources>

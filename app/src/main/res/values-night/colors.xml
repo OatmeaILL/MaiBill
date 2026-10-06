@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 深色模式的应用底色：消除启动白闪 + 启动屏同色 -->
+    <color name="app_bg">#10140F</color>
+</resources>

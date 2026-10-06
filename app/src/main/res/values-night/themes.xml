@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 深色模式下状态栏/导航栏图标需为浅色，否则深色底上看不清 -->
+    <style name="Theme.MaiBill" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/app_bg</item>
+    </style>
+</resources>

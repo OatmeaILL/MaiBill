@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小睦记账 · 改版设计稿 v2.4</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pbg:#E9ECE5;
+  --bg:#F4F6F1; --surface:#FFFFFF; --surface-2:#FBFCFA;
+  --track:#EDF0EA; --trackbar:#E2E8E0;
+  --ink:#1B2A21; --ink-2:#79857C; --ink-3:#A9B3AB; --line:#E8ECE6;
+  --primary:#2E9C74; --primary-deep:#1E6B52; --primary-soft:#6FC9A2;
+  --pcont:#DFF2E8; --pon:#0C3B27;
+  --grad:linear-gradient(152deg,#195E49 0%,#268A66 52%,#2E9C74 100%);
+  --amber:#C08A2E; --amber-c:#FAF0DA;
+  --inc:#2E9C74; --exp:#E0574A;
+  --shadow:0 1px 2px rgba(23,38,28,.05),0 10px 26px rgba(23,38,28,.06);
+  --shadow-soft:0 1px 2px rgba(23,38,28,.04),0 5px 14px rgba(23,38,28,.045);
+  --old:#1FA36B;
+}
+body.dark{
+  --pbg:#070907;
+  --bg:#10140F; --surface:#1A211B; --surface-2:#20281F;
+  --track:#263027; --trackbar:#2F3B31;
+  --ink:#E9EEE9; --ink-2:#9AA69C; --ink-3:#68736A; --line:#242D24;
+  --primary:#4FC08D; --primary-deep:#2E9C74; --primary-soft:#6FC9A2;
+  --pcont:#1E3B2D; --pon:#B9F0D4;
+  --grad:linear-gradient(152deg,#15503D 0%,#227758 52%,#2E9C74 100%);
+  --amber:#E0B45E; --amber-c:#332C1C;
+  --inc:#4FC08D;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 26px rgba(0,0,0,.35);
+  --shadow-soft:0 1px 2px rgba(0,0,0,.35),0 5px 14px rgba(0,0,0,.25);
+}
+body{
+  font-family:-apple-system,"SF Pro Display","Segoe UI","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei",sans-serif;
+  background:var(--pbg); color:var(--ink); transition:background .3s;
+}
+.pagehead{max-width:1760px;margin:0 auto;padding:30px 34px 4px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pagehead h1{font-size:21px;font-weight:800}
+.pagehead .ver{font-size:11.5px;font-weight:700;color:var(--primary);background:color-mix(in srgb,var(--primary) 15%,transparent);padding:4px 10px;border-radius:99px}
+.pagehead .sub{font-size:12.5px;color:var(--ink-2);margin-right:auto}
+.tgl{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:12px;box-shadow:var(--shadow)}
+.board{display:flex;flex-wrap:wrap;gap:36px;justify-content:center;align-items:flex-start;padding:26px 30px 30px;max-width:1760px;margin:0 auto}
+.shot{display:flex;flex-direction:column;gap:13px}
+.cap{text-align:center;font-size:13px;font-weight:700;color:var(--ink)}
+.cap small{display:block;margin-top:4px;font-size:11.5px;font-weight:500;color:var(--ink-2);line-height:1.65}
+.phone{width:375px;height:812px;border-radius:46px;overflow:hidden;position:relative;flex-shrink:0;
+  background:var(--bg);box-shadow:0 26px 60px rgba(8,18,12,.30),0 0 0 11px #0D0F0D,0 0 0 13px #363B36}
+.island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:112px;height:30px;border-radius:18px;background:#0B0E0B;z-index:9}
+.screen{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;align-items:center;padding:17px 27px 4px;font-size:14px;font-weight:700;color:var(--ink);flex-shrink:0}
+.sright{display:flex;align-items:center;gap:7px}
+.sig{display:flex;align-items:flex-end;gap:1.6px}
+.sig i{width:3px;background:currentColor;border-radius:1px}
+.sig i:nth-child(1){height:4px}.sig i:nth-child(2){height:6px}.sig i:nth-child(3){height:8px}.sig i:nth-child(4){height:10px}
+.batt{width:23px;height:11.5px;border:1.5px solid currentColor;border-radius:3.5px;position:relative;opacity:.95}
+.batt::before{content:"";position:absolute;top:1.5px;bottom:1.5px;left:1.5px;width:13px;background:currentColor;border-radius:1px}
+.batt::after{content:"";position:absolute;right:-4px;top:3px;width:2px;height:4.5px;background:currentColor;border-radius:1px}
+.wrap{padding:6px 16px 16px;flex:1 1 auto;min-height:0}
+.card{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);position:relative}
+.card.sub{box-shadow:none;border:1px solid var(--line)}
+.mrow{display:flex;align-items:center;gap:10px;padding:10px 0 12px}
+.mchip{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;padding:7px 13px;font-size:14.5px;font-weight:800;box-shadow:var(--shadow-soft)}
+.mchip i{font-style:normal;font-size:15px;font-weight:700;line-height:1;color:var(--primary)}
+.mchip i.dim{color:var(--ink-3);opacity:.55}
+.pillnet{margin-left:auto;font-size:11px;font-weight:700;color:var(--pon);background:var(--pcont);
+  padding:6px 11px;border-radius:99px}
+/* Hero */
+.hero{position:relative;overflow:hidden;background:var(--grad);border-radius:24px;padding:20px 20px 22px;color:#fff;
+  box-shadow:0 14px 30px rgba(20,80,60,.28)}
+.hero .wm{position:absolute;right:0;top:12px;width:88px;height:88px;object-fit:contain;
+  opacity:.95;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.20))}
+.hero .lb{position:relative;font-size:12.5px;opacity:.92;font-weight:600;display:flex;align-items:center;gap:8px}
+.hero .lb em{font-style:normal;font-size:11px;font-weight:700;background:rgba(255,255,255,.17);
+  border:1px solid rgba(255,255,255,.15);padding:3px 9px;border-radius:99px}
+.hero .amt{position:relative;font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px;margin:4px 0 14px}
+.hero .amt small{font-size:20px;font-weight:700;opacity:.92;margin-right:1px}
+.hero .sub{position:relative;display:flex;gap:8px}
+.hero .pill{flex:1;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.11);
+  border-radius:13px;padding:9px 12px;font-size:11.5px;opacity:1}
+.hero .pill b{display:block;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.hero .bwrap{position:relative;margin-top:16px}
+.hero .blb{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#fff;margin-bottom:8px}
+.hero .bar{height:8px;background:rgba(255,255,255,.24);border-radius:99px;overflow:hidden}
+.hero .bar i{display:block;height:100%;width:44%;background:#fff;border-radius:99px}
+.sect{display:flex;justify-content:space-between;align-items:baseline;padding:16px 6px 9px}
+.sect b{font-size:15px;font-weight:800}
+.sect span{font-size:12px;color:var(--ink-2)}
+.dcard{background:var(--surface);border-radius:20px;padding:4px 14px;box-shadow:var(--shadow)}
+.dayhead{display:flex;justify-content:space-between;padding:11px 2px 5px;font-size:11.5px;color:var(--ink-3);font-weight:600}
+.dayhead b{color:var(--ink-2);font-weight:700}
+.brow{display:flex;align-items:center;gap:12px;padding:10px 0}
+.brow+.brow,.dayhead+.brow{border-top:1px solid var(--line)}
+.ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:19px;flex-shrink:0;background:var(--cs)}
+body.dark .ic{background:color-mix(in srgb,var(--cc) 22%,transparent)}
+.c-1{--cc:#F5842C;--cs:#FFEDE0}
+.c-3{--cc:#F55E8C;--cs:#FFE9F0}
+.bmeta{flex:1;min-width:0}
+.bname{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bsub{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bamt{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+/* 图表页 */
+.sttitle{display:flex;align-items:center;gap:10px;padding:10px 0 12px}
+.sttitle b{font-size:22px;font-weight:800}
+.sttitle .mchip{margin-left:auto;font-size:13px;padding:6px 11px;gap:7px}
+.ov{display:flex;padding:15px 6px}
+.ovc{flex:1;text-align:center;position:relative}
+.ovc+.ovc::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:1px;background:var(--line)}
+.ovc em{font-style:normal;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-2);font-weight:700}
+.ovc em s{width:7px;height:7px;border-radius:50%;background:var(--dot);text-decoration:none}
+.ovc b{display:block;margin-top:6px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.ctitle{display:flex;justify-content:space-between;align-items:baseline}
+.ctitle b{font-size:14.5px;font-weight:800}
+.ctitle span{font-size:11.5px;color:var(--ink-2);font-weight:600}
+.bar{height:9px;border-radius:99px;background:var(--trackbar);overflow:hidden;margin-top:13px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.blb{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);font-weight:600;margin-top:9px}
+.blb b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+.warn{margin-top:13px;background:var(--amber-c);border-radius:13px;padding:10px 12px;
+  font-size:11.5px;font-weight:700;color:var(--amber);line-height:1.5}
+.say{font-size:12px;color:var(--ink-2);line-height:1.6;padding-top:8px}
+.say em{font-style:normal;color:var(--primary);font-weight:800;margin:0 3px}
+.donut{width:142px;height:142px;border-radius:50%;margin:14px auto 16px;position:relative;display:grid;place-items:center}
+.donut::after{content:"";position:absolute;inset:27px;border-radius:50%;background:var(--surface)}
+.donut span{position:relative;z-index:2;text-align:center}
+.donut span i{font-style:normal;display:block;font-size:11px;color:var(--ink-2);font-weight:600}
+.donut span b{display:block;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.lg{display:flex;align-items:center;gap:9px;padding:9px 0;font-size:12.5px}
+.lg+.lg{border-top:1px solid var(--line)}
+.lg s{width:11px;height:11px;border-radius:4px;background:var(--dot);text-decoration:none;flex-shrink:0}
+.lg em{font-style:normal;flex:1;font-weight:600}
+.lg u{text-decoration:none;font-weight:800;font-variant-numeric:tabular-nums}
+.lg q{quotes:none;width:38px;text-align:right;color:var(--ink-3);font-weight:700;font-size:11.5px}
+/* 存钱页 */
+.goal{padding:16px}
+.gtop{display:flex;align-items:center;gap:11px}
+.gic{width:42px;height:42px;border-radius:14px;background:var(--pcont);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.gname{font-size:14.5px;font-weight:800}
+.gsub{font-size:11.5px;color:var(--ink-2);margin-top:3px;font-weight:600}
+.grow{display:flex;align-items:baseline;gap:7px;margin-top:15px}
+.grow .big{font-size:29px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.6px}
+.grow .of{font-size:13px;color:var(--ink-2);font-weight:700;font-variant-numeric:tabular-nums}
+.pct{margin-left:auto;align-self:center;font-size:11.5px;font-weight:800;color:var(--pon);
+  background:var(--pcont);padding:5px 10px;border-radius:99px;font-variant-numeric:tabular-nums}
+.gbtns{display:flex;gap:9px;margin-top:15px}
+.gbtn{flex:1.45;background:var(--primary);color:#fff;border-radius:13px;padding:11px 0;text-align:center;
+  font-size:13.5px;font-weight:800;box-shadow:0 6px 14px rgba(46,156,116,.26)}
+.gbtn.gh{flex:1;background:transparent;color:var(--ink-2);box-shadow:none;border:1.4px solid var(--line)}
+.addgoal{margin-top:12px;border:1.6px dashed color-mix(in srgb,var(--primary) 38%,var(--line));
+  border-radius:20px;padding:15px;text-align:center;font-size:13.5px;font-weight:800;color:var(--primary);
+  background:color-mix(in srgb,var(--primary) 5%,transparent)}
+.acts{padding:14px 16px}
+.acts .ah{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.acts .ah b{font-size:14.5px;font-weight:800}
+.acts .ah span{font-size:11.5px;color:var(--ink-2);font-weight:600}
+.arow{display:flex;align-items:center;gap:11px;padding:9px 0}
+.arow+.arow{border-top:1px solid var(--line)}
+.adot{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:800;
+  background:var(--pcont);color:var(--pon);flex-shrink:0}
+.ameta{flex:1;min-width:0}
+.ameta b{display:block;font-size:13px;font-weight:700}
+.ameta small{font-size:11px;color:var(--ink-3)}
+.aamt{font-size:13.5px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--primary)}
+.empty{text-align:center;padding:14px 16px 20px}
+.empty img{width:168px;height:168px;object-fit:contain;display:block;margin:0 auto 4px}
+.empty b{display:block;font-size:14px;font-weight:800}
+.empty span{display:block;font-size:12px;color:var(--ink-2);margin-top:7px;line-height:1.6}
+.empty .mini{margin-top:14px;display:inline-block;background:var(--pcont);color:var(--pon);
+  font-size:12px;font-weight:800;padding:9px 18px;border-radius:12px}
+/* 底栏 */
+.nav{position:sticky;bottom:0;margin-top:auto;display:flex;align-items:flex-end;justify-content:space-around;
+  padding:9px 10px 16px;border-top:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(16px);flex-shrink:0}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--ink-3);
+  font-weight:700;width:58px}
+.ni svg{width:22px;height:22px}
+.nico{display:grid;place-items:center;height:22px}
+.ni.on{color:var(--primary)}
+.nico.av{width:24px;height:24px;border-radius:50%;overflow:hidden;opacity:.74;filter:saturate(.6);
+  box-shadow:0 0 0 1.5px var(--line);transition:all .2s}
+.ni.on .nico.av{opacity:1;filter:none;box-shadow:0 0 0 2px var(--primary)}
+.nico.av img{width:100%;height:100%;object-fit:cover;object-position:50% 26%;transform:scale(1.45)}
+.fab{width:55px;height:55px;border-radius:50%;background:var(--grad);color:#fff;font-size:27px;font-weight:300;
+  display:grid;place-items:center;margin-top:-32px;box-shadow:0 10px 22px rgba(20,80,60,.40),0 0 0 5px var(--bg)}
+/* 说明区 */
+.notes{max-width:1760px;margin:0 auto;padding:4px 34px 60px}
+.ncard{background:var(--surface);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.ncard h2{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ncard h2 s{width:4px;height:15px;border-radius:2px;background:var(--primary);text-decoration:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;font-weight:700;color:var(--ink-2);background:var(--track);border-radius:11px;padding:8px 12px}
+.chip b{color:var(--primary);font-weight:800}
+.swatch{display:flex;flex-wrap:wrap;gap:26px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.swrow{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-2);font-weight:600}
+.swrow i{width:22px;height:22px;border-radius:8px;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.swrow code{font-size:11px;color:var(--ink-3);font-family:ui-monospace,Consolas,monospace}
+</style>
+</head>
+<body>
+
+<div class="pagehead">
+  <h1>小睦记账 · 改版设计稿</h1>
+  <span class="ver">v2.4</span>
+  <span class="sub">主色换成「褪色薄荷」（贴近小睦的发色）· 卡片分主次 · 空白处让她说话</span>
+  <button class="tgl" onclick="document.body.classList.toggle('dark')">🌗 切换深色</button>
+</div>
+
+<div class="board">
+
+  <!-- 1 明细 -->
+  <div class="shot">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span>22:00</span><span class="sright"><span class="sig"><i></i><i></i><i></i><i></i></span><span class="batt"></span></span></div>
+      <div class="wrap">
+        <div class="mrow">
+          <div class="mchip"><i class="dim">‹</i>2026年10月<i>›</i></div>
+          <span class="pillnet">本月净存入 ¥0.00</span>
+        </div>
+        <div class="hero">
+          <img class="wm" src="__CHIBI__" alt="">
+          <div class="lb"><span>10月支出</span><em>已用 44%</em></div>
+          <div class="amt"><small>¥</small>664.63</div>
+          <div class="sub">
+            <div class="pill">10月收入<b>0.00</b></div>
+            <div class="pill">10月结余<b>-664.63</b></div>
+          </div>
+          <div class="bwrap">
+            <div class="blb"><span>预算剩余 ¥835.37</span><span>日均可用 ¥32.12</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+        </div>
+        <div class="sect"><b>账单明细</b><span>共 20 笔</span></div>
+        <div class="dcard">
+          <div class="dayhead"><b>10月6日 · 今天</b><span>支出 ¥215.06</span></div>
+          <div class="brow"><span class="ic c-1">🍜</span><span class="bmeta"><span class="bname">餐饮</span><span class="bsub">19:10</span></span><span class="bamt">-¥8.00</span></div>
+          <div class="brow"><span class="ic c-1">🍜</span><span class="bmeta"><span class="bname">餐饮</span><span class="bsub">18:26 · 支付宝</span></span><span class="bamt">-¥16.00</span></div>
+          <div class="brow"><span class="ic c-3">🛍️</span><span class="bmeta"><span class="bname">购物</span><span class="bsub">13:40</span></span><span class="bamt">-¥138.00</span></div>
+          <div class="brow"><span class="ic c-1">🍜</span><span class="bmeta"><span class="bname">餐饮</span><span class="bsub">12:13</span></span><span class="bamt">-¥16.00</span></div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="ni on"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M9 8.5h6M9 12.5h4"/></svg></span><span>明细</span></div>
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 19.5V12M12 19.5V5.5M18.5 19.5v-5.5"/></svg></span><span>图表</span></div>
+        <div class="fab">＋</div>
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="2.6"/></svg></span><span>存钱</span></div>
+        <div class="ni"><span class="nico av"><img src="__ART__" alt=""></span><span>我的</span></div>
+      </nav>
+    </div></div>
+    <div class="cap">明细页<small>月份切换器改 ‹ 双箭头 ›；Hero 渐变改纵向墨绿→薄荷<br>右下角极淡的小睦水印；底栏「我的」换成她</small></div>
+  </div>
+
+  <!-- 2 图表 -->
+  <div class="shot">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span>22:00</span><span class="sright"><span class="sig"><i></i><i></i><i></i><i></i></span><span class="batt"></span></span></div>
+      <div class="wrap">
+        <div class="sttitle"><b>图表</b><div class="mchip"><i class="dim">‹</i>10月<i>›</i></div></div>
+        <div class="card sub"><div class="ov">
+          <div class="ovc" style="--dot:#E0574A"><em><s></s>支出</em><b>664.63</b></div>
+          <div class="ovc" style="--dot:var(--primary)"><em><s></s>收入</em><b>0.00</b></div>
+          <div class="ovc" style="--dot:#A9B3AB"><em><s></s>结余</em><b>-664.63</b></div>
+        </div></div>
+        <div class="card" style="padding:16px;margin-top:12px">
+          <div class="ctitle"><b>10月预算</b><span>总预算 ¥1,500.00</span></div>
+          <div class="bar"><i style="width:44%"></i></div>
+          <div class="blb"><span>已用 44%</span><span>剩余 <b>¥835.37</b></span></div>
+          <div class="warn">⚠ 按当前节奏，月底约支出 ¥3,434，将超支 ¥1,934</div>
+        </div>
+        <div class="card sub" style="padding:13px 16px;margin-top:12px">
+          <div class="ctitle"><b>对比上月</b><span>上月同期 ¥0.00</span></div>
+          <div class="say"><em>「</em>……上次的事，不记得了。<em>」</em></div>
+        </div>
+        <div class="card" style="padding:16px;margin-top:12px">
+          <div class="ctitle"><b>分类占比</b><span>不含储蓄</span></div>
+          <div class="donut" style="background:conic-gradient(#1E6B52 0 51%,#6FC9A2 51% 100%)">
+            <span><i>本月支出</i><b>¥665</b></span>
+          </div>
+          <div class="lg" style="--dot:#1E6B52"><s></s><em>购物</em><u>338.57</u><q>51%</q></div>
+          <div class="lg" style="--dot:#6FC9A2"><s></s><em>餐饮</em><u>326.06</u><q>49%</q></div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M9 8.5h6M9 12.5h4"/></svg></span><span>明细</span></div>
+        <div class="ni on"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 19.5V12M12 19.5V5.5M18.5 19.5v-5.5"/></svg></span><span>图表</span></div>
+        <div class="fab">＋</div>
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="2.6"/></svg></span><span>存钱</span></div>
+        <div class="ni"><span class="nico av"><img src="__ART__" alt=""></span><span>我的</span></div>
+      </nav>
+    </div></div>
+    <div class="cap">图表页<small>环形图改薄荷同色系阶梯（深浅交替，好区分）<br>次卡改描边、主卡留影；超支提示改琥珀（她的眼睛色）</small></div>
+  </div>
+
+  <!-- 3 存钱（有动态） -->
+  <div class="shot">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span>22:00</span><span class="sright"><span class="sig"><i></i><i></i><i></i><i></i></span><span class="batt"></span></span></div>
+      <div class="wrap">
+        <div class="mrow"><div class="mchip" style="font-size:18px;border:none;box-shadow:none;padding:2px 0">存钱</div>
+          <span class="pillnet">本月净存入 ¥1,200.00</span></div>
+        <div class="card goal">
+          <div class="gtop">
+            <div class="gic">📱</div>
+            <div><div class="gname">一加ace6t</div><div class="gsub">还差 ¥1,800.00 · 不设期限</div></div>
+          </div>
+          <div class="grow"><span class="big">1,200.00</span><span class="of">/ ¥3,000.00</span><span class="pct">40%</span></div>
+          <div class="bar"><i style="width:40%"></i></div>
+          <div class="gbtns"><div class="gbtn">＋ 存入</div><div class="gbtn gh">取出</div></div>
+        </div>
+        <div class="addgoal">＋ 新建存钱目标</div>
+        <div class="card sub acts" style="margin-top:12px">
+          <div class="ah"><b>最近动态</b><span>近 30 天</span></div>
+          <div class="arow"><span class="adot">＋</span><span class="ameta"><b>存入</b><small>10月6日 21:12</small></span><span class="aamt">+¥500.00</span></div>
+          <div class="arow"><span class="adot">＋</span><span class="ameta"><b>存入</b><small>10月4日 09:30</small></span><span class="aamt">+¥700.00</span></div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M9 8.5h6M9 12.5h4"/></svg></span><span>明细</span></div>
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 19.5V12M12 19.5V5.5M18.5 19.5v-5.5"/></svg></span><span>图表</span></div>
+        <div class="fab">＋</div>
+        <div class="ni on"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="2.6"/></svg></span><span>存钱</span></div>
+        <div class="ni"><span class="nico av"><img src="__ART__" alt=""></span><span>我的</span></div>
+      </nav>
+    </div></div>
+    <div class="cap">存钱页 · 有记录<small>进度条轨道加深（0% 也能看见）＋「％」并入金额行<br>补齐「最近动态」卡，把下方空白填起来</small></div>
+  </div>
+
+  <!-- 4 存钱（空态） -->
+  <div class="shot">
+    <div class="phone"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span>22:00</span><span class="sright"><span class="sig"><i></i><i></i><i></i><i></i></span><span class="batt"></span></span></div>
+      <div class="wrap">
+        <div class="mrow"><div class="mchip" style="font-size:18px;border:none;box-shadow:none;padding:2px 0">存钱</div>
+          <span class="pillnet">本月净存入 ¥0.00</span></div>
+        <div class="card goal">
+          <div class="gtop">
+            <div class="gic">📱</div>
+            <div><div class="gname">一加ace6t</div><div class="gsub">还差 ¥3,000.00 · 不设期限</div></div>
+          </div>
+          <div class="grow"><span class="big">0.00</span><span class="of">/ ¥3,000.00</span><span class="pct">0%</span></div>
+          <div class="bar"><i style="width:0%"></i></div>
+          <div class="gbtns"><div class="gbtn">＋ 存入</div><div class="gbtn gh">取出</div></div>
+        </div>
+        <div class="addgoal">＋ 新建存钱目标</div>
+        <div class="empty">
+          <img src="__CHIBI__" alt="">
+          <b>还没有存过一笔。</b>
+          <span>慢慢来。先从 ¥10 开始也行。</span>
+          <div class="mini">现在存第一笔</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M9 8.5h6M9 12.5h4"/></svg></span><span>明细</span></div>
+        <div class="ni"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 19.5V12M12 19.5V5.5M18.5 19.5v-5.5"/></svg></span><span>图表</span></div>
+        <div class="fab">＋</div>
+        <div class="ni on"><span class="nico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="2.6"/></svg></span><span>存钱</span></div>
+        <div class="ni"><span class="nico av"><img src="__ART__" alt=""></span><span>我的</span></div>
+      </nav>
+    </div></div>
+    <div class="cap">存钱页 · 一条记录都没有<small>把原来那片空白交给小睦：躺姿 + 一句话 + 引导按钮<br>「慢慢来。」是她会说的话，不是通用的「暂无数据」</small></div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <div class="ncard">
+    <h2><s></s>这一版改了什么</h2>
+    <div class="chips">
+      <span class="chip">主色 <b>#1FA36B → #2E9C74</b>（褪色薄荷）</span>
+      <span class="chip">Hero 渐变 → 纵向<b>墨绿→薄荷</b></span>
+      <span class="chip">环形图 → <b>薄荷同色系阶梯</b>（深浅交替）</span>
+      <span class="chip">卡片分主次：<b>主卡留影 / 次卡描边</b></span>
+      <span class="chip">底栏「我的」→ <b>小睦头像</b>，其余图标线条化</span>
+      <span class="chip">进度条轨道 <b>#EDF0EA → #E2E8E0</b></span>
+      <span class="chip">「0%」从角上 → <b>并入金额行做胶囊</b></span>
+      <span class="chip">月份切换器 → <b>‹ 2026年10月 ›</b></span>
+      <span class="chip">超支提示 <b>红 → 琥珀</b>（她的眼睛色）</span>
+      <span class="chip">空白处补 <b>最近动态卡 + 小睦台词</b></span>
+    </div>
+    <div class="swatch">
+      <span class="swrow"><i style="background:#1FA36B"></i>旧主色 <code>#1FA36B</code></span>
+      <span class="swrow"><i style="background:#2E9C74"></i>新主色 <code>#2E9C74</code></span>
+      <span class="swrow"><i style="background:#195E49"></i>深 <code>#195E49</code></span>
+      <span class="swrow"><i style="background:#6FC9A2"></i>浅 <code>#6FC9A2</code></span>
+      <span class="swrow"><i style="background:#C08A2E"></i>琥珀（她的眼睛） <code>#C08A2E</code></span>
+      <span class="swrow"><i style="background:linear-gradient(152deg,#195E49,#268A66 52%,#2E9C74)"></i>新 Hero 渐变</span>
+    </div>
+  </div>
+</div>
+
+<script>if(location.search.indexOf('dark')>-1)document.body.classList.add('dark');</script>
+</body>
+</html>

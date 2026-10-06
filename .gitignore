@@ -1,0 +1,44 @@
+# ---- Android / Gradle ----
+*.iml
+.gradle/
+.kotlin/
+build/
+captures/
+local.properties
+.cxx/
+
+# 依赖缓存 / 构建产物
+.gradle-cache/
+gradle-home/
+**/build/outputs/
+**/build/intermediates/
+**/build/tmp/
+
+# ---- 本地构建环境（体积 2.3G，含 Android SDK / JDK / Gradle 缓存 / 签名密钥，禁止入库）----
+build-env/
+
+# ---- IDE ----
+.idea/
+*.hprof
+captures/
+.externalNativeBuild/
+
+# ---- 签名与密钥 ----
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+
+# ---- 设计中间产物（从素材站批量抓取的原始解析文件，非交付物）----
+design/candidates/
+
+# ---- 打包产物 ----
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ---- 系统文件 ----
+Thumbs.db
+desktop.ini
+.DS_Store
